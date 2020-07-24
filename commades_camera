@@ -1,0 +1,37 @@
+LANCER LA CAMERA
+roslaunch jetson_camera jetson_camera.launch
+
+FAIRE LES CALCULS DE CALIBRATION
+rosrun camera_calibration cameracalibrator.py --square 0.056 --size 6x4 image:=/front_camera/image_raw camera:=front_camera
+
+LANCER LE FLUX AVEC IMAGE CALIBREE
+ROS_NAMESPACE=front_camera rosrun image_proc image_proc
+
+LANCE LE RESEAU DE NEURONES
+rosrun ros_deep_learning_detector /detectnet/image_in:=/front_camera model_name:=pednet
+
+CREATION DU PACKAGE
+ cd catkin_ws/src/
+ catkin_create_pkg stage_lou rospy
+cd stage_lou/
+mkdir script
+cd script
+touch premier_noeud_image.py
+chmod +x premier_noeud_image.py 
+ vim premier_noeud_image.py 
+cd ..
+catkin_make
+source devel_setup.bash
+roscd stage_lou
+
+VOIR LES VALEURS DES TOPICS
+rostopic echo /detectnet/detections 
+
+
+INSTALLATIONS
+git clone --recursive https://github.com/dusty-nv/jetson-inference
+sudo apt install ros-melodic-image-proc ros-melodic-image-geometry
+git clone https://github.com/sfalexrog/jetson_camera.git
+sudo apt install ros-melodic-vision-opencv ros-melodic-vision-msgs
+rosrun stage_lou premier_noeud_image.py 
+
