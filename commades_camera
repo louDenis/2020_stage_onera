@@ -35,3 +35,10 @@ git clone https://github.com/sfalexrog/jetson_camera.git
 sudo apt install ros-melodic-vision-opencv ros-melodic-vision-msgs
 rosrun stage_lou premier_noeud_image.py 
 
+http://wiki.ros.org/message_filters/ApproximateTime
+https://docs.ros.org/api/message_filters/html/python/#message_filters.Subscriber
+https://docs.ros.org/api/message_filters/html/python/#message_filters.Subscriber
+https://docs.opencv.org/master/da/d22/tutorial_py_canny.html
+https://docs.opencv.org/master/d9/d0c/group__calib3d.html
+http://wiki.ros.org/image_proc
+https://github.com/dusty-nv/ros_deep_learning
