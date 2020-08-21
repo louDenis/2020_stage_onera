@@ -11,7 +11,7 @@ from geometry_msgs.msg import Twist
 class calibration:
     def __init__(self):
         self.is_init= False
-        self.pub_vel= rospy.Publisher("/cmd_vel", Twist, queue_size = 10)
+        self.pub_vel= rospy.Publisher("/cmd_vel_auto", Twist, queue_size = 10)
         self.sub_calib= rospy.Subscriber("/front_camera/camera_info",CameraInfo, self.callback)
         self.sub_detection= rospy.Subscriber("/detectnet/detections",Detection2DArray, self.callback_detect )
     

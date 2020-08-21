@@ -29,15 +29,12 @@ class image_converter:
       cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
     except CvBridgeError as e:
       print(e)
-
     (rows,cols,channels) = cv_image.shape
     if cols > 60 and rows > 60 :
       cv2.rectangle(cv_image, (50,50), (65,65), (255,0,0), 2)
       cv_image= print_rectangle(self, data, detection, cv_image)
       #la partie a custom
       #cv2.circle(cv_image, (50,50), 10, 255)
-
-
     try:
       self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
     except CvBridgeError as e:
