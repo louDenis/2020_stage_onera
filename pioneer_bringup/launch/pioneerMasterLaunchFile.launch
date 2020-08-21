@@ -1,0 +1,22 @@
+<launch>
+	<!-- Defining the arguments -->
+	<arg name="controller" default="rosaria" doc="hardware driver controller: 'rosaria' or 'p2os'" />
+	<arg name="controller_port" default="/dev/ttyUSB0" doc="serial port to communicate with the controller. Should be '/dev/ttyS0' for COM1 port using the onboard computer, or '/dev/ttyUSB0' if using USB-Serial adapter with an external laptop" />
+	<arg name="sonar" default="false" doc="true to activate sonars (only for p2os controller)" />
+
+	<!-- hardware controller -->
+	<group>
+			<include file="$(find pioneer_bringup)/launch/controller.launch">
+					<arg name="controller" value="$(arg controller)" />
+					<arg name="port" value="$(arg controller_port)" />
+					<arg name="sonar" value="$(arg sonar)" />
+			</include>
+			<include file="$(find pioneer_bringup)/launch/joystick.launch" />
+	</group>
+	<node pkg="pioneer_bringup" type="control_vel.py" name="control_gachette" />
+
+        <!-- Publish the required transform -->
+		<include file="$(find pioneer_bringup)/launch/tf_base_link_to_laser.launch" />
+		<include file="$(find pioneer_bringup)/launch/urg_lidar.launch" />
+	  <include file="$(find p2os_urdf)/launch/pioneer3dx_urdf.launch"/>
+</launch>

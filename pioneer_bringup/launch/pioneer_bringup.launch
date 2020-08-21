@@ -1,0 +1,56 @@
+<launch>
+
+    <arg name="controller" default="rosaria" doc="hardware driver controller: 'rosaria' or 'p2os'" />
+    <arg name="base"              default="roomba"         doc="mobile base type [create, roomba]"/>
+    <arg name="stacks"            default="circles"       doc="stack type displayed in visualisation/simulation [circles, hexagons]"/>
+    <arg name="3d_sensor"         default="asus_xtion_pro"    doc="3d sensor types [kinect, asux_xtion_pro]"/>
+   
+    <arg name="controller_port" default="/dev/ttyUSB0" doc="serial port to communicate with the controller. Should be '/dev/ttyS0' for COM1 port using the onboard computer, or '/dev/ttyUSB0' if using USB-Serial adapter with an external laptop" />
+
+    <arg name="sonar" default="false" doc="true to activate sonars (only for p2os controller)" />
+
+
+    <arg name="laser" default="hokuyo" doc="Laser reference code or 'false' if no laser (Possible laser references are: 'hokuyo', 'lms_1xx', 'lms_2xx', 'lms_1xxx', 'lms_4xxx', 'lms_5xx', 'mrs_1xxx', 'mrs_6xxx', 'rms_3xx', 'tim_5xx', 'tim_7xx', 'tim_7xxS')" />
+
+    <!-- laser specific configuration -->
+    <arg name="laser_serial_port" default="/dev/ttyACM0" doc="Laser Port (if applicable)" />
+    <arg name="laser_baselink_distance" default="0.10 0 -0.17 0 0 0" doc="Distance between baselink and lidar in meters (for setting tf broadcast)" />
+
+    <!-- Xition --> 
+    <arg name="xition" value="false" />
+        
+    <arg name="dashboard" default="false" doc="use dashboard" />
+
+    <!-- hardware controller -->
+    <group>
+        <include file="$(find pioneer_bringup)/launch/controller.launch">
+            <arg name="controller" value="$(arg controller)" />
+            <arg name="port" value="$(arg controller_port)" />
+            <arg name="sonar" value="$(arg sonar)" />
+        </include>
+        <include file="$(find pioneer_bringup)/launch/joystick.launch" />
+    </group>
+
+    <group unless="$(eval arg('laser') == false)">
+        <include file="$(find pioneer_bringup)/launch/laser.launch">
+            <arg name="laser_type" value="$(arg laser)" />
+            <arg name="laser_baselink_distance" value="$(arg laser_baselink_distance)" />
+        </include>
+    </group>
+
+    <!-- Xition -->
+    <group unless="$(eval arg('xition') == false)" >
+    	<include file="$(find turtlebot_bringup)/launch/3dsensor.launch" >
+	<arg name="3d_sensor" value="asus_xtion_pro" />
+	<arg name="camera"  value="xtion" />
+
+	<arg name="scan_topic" value="/xtion/scan" />	
+	</include>
+    </group>
+
+
+    <!-- dashboard -->
+    <group if="$(arg dashboard)">
+        <node name="pioneer_dashboard" pkg="rqt_gui" type="rqt_gui" respawn="false" output="screen" args="--perspective-file $(find pioneer_dashboard)/config/pioneer_dashboard.perspective" />
+    </group>
+</launch>

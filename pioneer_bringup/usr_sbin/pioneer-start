@@ -1,0 +1,19 @@
+#!/bin/bash
+# THIS IS A GENERATED FILE, NOT RECOMMENDED TO EDIT.
+
+
+source /home/rosuser/catkin_ws/devel/setup.bash
+JOB_FOLDER=/etc/ros/noetic/pioneer.d
+export ROS_HOSTNAME=$(hostname)
+
+export ROS_MASTER_URI=http://127.0.0.1:11311
+export ROS_HOME=${ROS_HOME:=$(echo ~rosuser)/.ros}
+export ROS_LOG_DIR=$log_path
+
+# Punch it.
+setuidgid rosuser roslaunch pioneer_bringup pioneer_bringup.launch  &
+PID=$!
+
+echo "$PID" > /tmp/pioneer.pid
+
+wait "$PID"

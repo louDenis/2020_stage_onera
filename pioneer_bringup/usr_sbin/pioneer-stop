@@ -1,0 +1,6 @@
+#!/bin/bash
+# THIS IS A GENERATED FILE, NOT RECOMMENDED TO EDIT.
+
+PID=$(cat /tmp/pioneer.pid)
+kill $PID
+while kill -0 $PID 2>/dev/null; do sleep 0.2; done

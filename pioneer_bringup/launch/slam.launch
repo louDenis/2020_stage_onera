@@ -1,0 +1,12 @@
+<launch>
+
+
+
+  <node pkg="gmapping" type="slam_gmapping" name="gmapping">
+    <param name="particles" value="50" />
+    <param name="linearUpdate" value="0.1" />
+    <param name="angularUpdate" value="0.03" />
+  </node>
+
+
+</launch>

@@ -1,0 +1,57 @@
+<launch>
+  <!-- Turtlebot -->
+  <arg name="base"              default="roomba"         doc="mobile base type [create, roomba]"/>
+   kernels." />
+  <arg name="stacks"            default="circles"       doc="stack type displayed in visualisation/simulation [circles, hexagons]"/>
+  <arg name="3d_sensor"         default="asus_xtion_pro"    doc="3d sensor types [kinect, asux_xtion_pro]"/>
+  <arg name="simulation"        default="false"   doc="set flags to indicate this turtle is run in simulation mode."/>
+  <param name="/use_sim_time" value="$(arg simulation)"/>
+  
+  
+ 
+   <arg name="laser" default="hokuyo" doc="Laser reference code or 'false' if no laser (Possible laser references are: 'hokuyo', 'lms_1xx', 'lms_2xx', 'lms_1xxx', 'lms_4xxx', 'lms_5xx', 'mrs_1xxx', 'mrs_6xxx', 'rms_3xx', 'tim_5xx', 'tim_7xx', 'tim_7xxS')" />
+      <arg name="laser_serial_port" default="/dev/ttyACM0" doc="Laser Port (if applicable)" />
+    <arg name="laser_baselink_distance" default="0.10 0 0.17 0 0 0" doc="Distance between baselink and lidar in meters (for setting tf broadcast)" />
+
+  
+    <!-- include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
+    <arg name="rgb_processing" value="false" />
+    <arg name="depth_registration" value="false" />
+    <arg name="depth_processing" value="false" />
+    <arg name="scan_topic" value="/scan" />
+    </include -->
+
+    <include file="$(find pioneer_bringup)/launch/laser.launch">
+
+                <arg name="laser_type" value="$(arg laser)" />
+            <arg name="laser_baselink_distance" value="$(arg laser_baselink_distance)" />
+    </include>
+    
+    
+    
+    <!-- t265 -->
+    	<include file="$(find realsense2_camera)/launch/rs_t265.launch">
+		<arg name="camera" value="t265"/>
+	</include>
+
+
+
+  <!-- Gmapping -->
+  <arg name="custom_gmapping_launch_file" default="$(find turtlebot_navigation)/launch/includes/gmapping/$(arg 3d_sensor)_gmapping.launch.xml"/>
+  <include file="$(arg custom_gmapping_launch_file)"/>
+
+  <!-- Move base -->
+  <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml"/>
+  
+
+  <include file="$(find turtlebot_bringup)/launch/includes/robot.launch.xml">
+    <arg name="base" value="$(arg base)" />
+    <arg name="stacks" value="$(arg stacks)" />
+    <arg name="3d_sensor" value="$(arg 3d_sensor)" />
+  </include>
+  
+  <node pkg="tf" type="static_transform_publisher" name="basefootprint_baselink_tf" args="0.0 0.0 -0.10 0.0 0.0 0.0 base_footprint base_link 1" />
+  
+  
+  
+</launch>

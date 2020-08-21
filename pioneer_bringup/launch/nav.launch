@@ -1,0 +1,34 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="model" default="pioneer" doc="model"/>
+  <arg name="cmd_vel_topic" default="/cmd_vel" />
+  <arg name="odom_topic" default="odom" />
+  <arg name="move_forward_only" default="false"/>
+  
+   <!-- node pkg="tf" type="static_transform_publisher" name="base_link_foot_to_baselink" args="0 0 0 0 0 0 base_footprint base_link 100" / -->
+
+
+  <!-- move_base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <rosparam file="$(find pioneer_bringup)/param/costmap_common_params_$(arg model).yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find pioneer_bringup)/param/costmap_common_params_$(arg model).yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find pioneer_bringup)/param/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find pioneer_bringup)/param/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find pioneer_bringup)/param/move_base_params.yaml" command="load" />
+    <rosparam file="$(find pioneer_bringup)/param/dwa_local_planner_params_$(arg model).yaml" command="load" />
+    ,param name="recovery_behavior_enable" value="False" />
+    <remap from="cmd_vel" to="/cmd_vel_auto"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+  </node>
+
+  <node pkg="gmapping" type="slam_gmapping" name="gmapping">
+    <param name="particles" value="50" />
+    <param name="linearUpdate" value="0.1" />
+    <param name="angularUpdate" value="0.03" />
+    <param name="map_update_interval" value="1" />
+  </node>
+
+
+</launch>

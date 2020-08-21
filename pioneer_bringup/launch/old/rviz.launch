@@ -1,0 +1,3 @@
+<launch>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find pioneer_bringup)/rviz/navigation.rviz"/>
+</launch>
